@@ -21,10 +21,24 @@ class ApiManager {
     }
   }
 
-  static Future<NewsResponse?> getNewsNySourceId(String sourceId) async {
+  static Future<NewsResponse?> getNewsBySourceId(String sourceId) async {
     //https://newsapi.org/v2/everything?q=bitcoin&apiKey=df7c64d9cf464595ae43386336446e95
     Uri url = Uri.https(ApiConstatnts.baseUrl, ApiConstatnts.newsApi,
         {'apiKey': 'df7c64d9cf464595ae43386336446e95', 'sources': sourceId});
+    try {
+      var response = await http.get(url);
+      var bodyString = response.body;
+      var json = jsonDecode(bodyString);
+      return NewsResponse.fromJson(json);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static Future<NewsResponse?> searchNews(String query) async {
+    //https://newsapi.org/v2/everything?q=bitcoin&apiKey=df7c64d9cf464595ae43386336446e95
+    Uri url = Uri.https(ApiConstatnts.baseUrl, ApiConstatnts.newsApi,
+        {'apiKey': 'df7c64d9cf464595ae43386336446e95', 'q': query});
     try {
       var response = await http.get(url);
       var bodyString = response.body;

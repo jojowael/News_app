@@ -1,20 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_news/model/NewsResponse.dart';
-import 'package:flutter_app_news/my_theme.dart';
-import 'package:flutter_app_news/news/news_details_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class NewsItem extends StatelessWidget {
-  News news;
+import '../my_theme.dart';
 
-  NewsItem({required this.news});
+class NewsDetailsScreen extends StatelessWidget {
+  static const String routeName = 'news-details';
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context)
-          .pushNamed(NewsDetailsScreen.routeName, arguments: news),
-      child: Container(
+    var news = ModalRoute.of(context)!.settings.arguments as News;
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
         padding: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -50,6 +49,10 @@ class NewsItem extends StatelessWidget {
             SizedBox(
               height: 10,
             ),
+            Text(news.content ?? ""),
+            SizedBox(
+              height: 10,
+            ),
             Text(
               news.publishedAt ?? "",
               style: Theme.of(context)
@@ -58,9 +61,36 @@ class NewsItem extends StatelessWidget {
                   .copyWith(color: MyTheme.greyColor),
               textAlign: TextAlign.end,
             ),
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              onTap: () => launchNewsUrl(news.url ?? ""),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'View full article',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 15,
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> launchNewsUrl(String url) async {
+    var uri = Uri.parse(url);
+    await launchUrl(uri);
   }
 }
