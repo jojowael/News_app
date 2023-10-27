@@ -3,6 +3,7 @@ import 'package:flutter_app_news/category/category_details.dart';
 import 'package:flutter_app_news/category/category_fragement.dart';
 import 'package:flutter_app_news/model/category.dart';
 import 'package:flutter_app_news/my_theme.dart';
+import 'package:flutter_app_news/search/news_search_delegate.dart';
 import 'package:flutter_app_news/settings/settings.dart';
 import 'package:flutter_app_news/tabs/home_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                   onPressed: () {
-                    showSearch(context: context, delegate: MySearchDelegate());
+                    showSearch(
+                        context: context, delegate: NewsSearchDelegate());
                   },
                   icon: Icon(Icons.search))
             ],
@@ -79,84 +81,4 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MySearchDelegate extends SearchDelegate {
-  List<String> searchResults = [
-    'Sports',
-    'General',
-    'Health',
-    'Business',
-    'Entertainment',
-    'Science'
-  ];
 
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    IconButton(
-      icon: Icon(Icons.search),
-      onPressed: () {},
-    );
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    IconButton(
-      icon: Icon(
-        Icons.clear,
-        color: MyTheme.blackColor,
-      ),
-      onPressed: () {
-        if (query.isEmpty) {
-          close(context, null); //close SearchBar
-        } else {
-          query = '';
-        }
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> suggestions = searchResults.where((searchResults) {
-      final result = searchResults.toLowerCase();
-      final input = query.toLowerCase();
-      return result.contains(input);
-    }).toList();
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions[index];
-
-        return ListTile(
-          title: Text(suggestion),
-          onTap: () {
-            query = suggestion;
-            showResults(context);
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> suggestions = searchResults.where((searchResults) {
-      final result = searchResults.toLowerCase();
-      final input = query.toLowerCase();
-      return result.contains(input);
-    }).toList();
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = suggestions[index];
-
-        return ListTile(
-          title: Text(suggestion),
-          onTap: () {
-            query = suggestion;
-            showResults(context);
-          },
-        );
-      },
-    );
-  }
-}

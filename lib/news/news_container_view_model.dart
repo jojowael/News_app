@@ -13,7 +13,7 @@ class NewsContainerViewModel extends ChangeNotifier {
     errorMessage = null;
     notifyListeners();
     try {
-      var response = await ApiManager.getNewsNySourceId(sourceId);
+      var response = await ApiManager.getNewsBySourceId(sourceId);
       if (response?.status == 'error') {
         errorMessage = response?.message;
       } else {
